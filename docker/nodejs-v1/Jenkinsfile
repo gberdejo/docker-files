@@ -2,6 +2,7 @@ pipeline {
     agent any
     tools{
         nodejs '18.18.0'
+        docker '1.5'
     }
     stages {
         stage('Clone') {
@@ -10,10 +11,30 @@ pipeline {
             }
         }
 
-        stage('build') {
+        stage('Install dependencies') {
             steps{
                 sh 'node --version'
                 sh 'npm install'
+            }
+        }
+
+        stage('Test') {
+            steps{
+                sh 'npm run lint'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'npm run build'
+            }
+        }
+
+        stage('Build Imagen Docker') {
+            steps {
+                script {
+                    dockerImage = docker.build('gberdejo/project-base-1:lasted', '.')
+                }
             }
         }
     }
