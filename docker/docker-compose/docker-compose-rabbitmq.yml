@@ -1,0 +1,30 @@
+version: '3'
+services:
+  rabbitmq-dev:
+    image: bitnami/rabbitmq
+    container_name: rabbitmq-container
+    environment:
+      - RABBITMQ_USERNAME=user
+      - RABBITMQ_PASSWORD=bitnami
+    ports:
+      - "5675:5672"
+      - "15675:15672"
+    volumes:
+      - rabbitmq-data:/bitnami/rabbitmq
+    networks:
+      rabbitmq-network:
+        ipv4_address: 172.20.0.2
+
+volumes:
+  rabbitmq-data:
+
+networks:
+  rabbitmq-network:
+    name: rabbitmq-network
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.20.0.0/24
+          gateway: 172.20.0.1
+
